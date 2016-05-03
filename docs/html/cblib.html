@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="../css/github.css">
+        <title></title>
+    </head>
+    <body>
+        <p><a href="/docs/jsl/html/index.html">index</a></p>
+<hr>
+<h1 id="jsl-standard-callbacks">JSL Standard Callbacks</h1>
+<p>JSL provides the following standard callbacks :</p>
+<ul>
+<li><a href="#concat">concat</a></li>
+<li><a href="#extend">extend</a></li>
+<li><a href="#length">length</a></li>
+<li><a href="#keys">keys</a></li>
+<li><a href="#objequal">objEqual</a></li>
+<li><a href="#objNotequal">objNotEqual</a></li>
+<li><a href="#objgetvalue">objGetValue</a></li>
+<li><a href="#parselist">parseList</a></li>
+<li><a href="#isnull">isNull</a></li>
+<li><a href="#notnull">notNull</a></li>
+<li><a href="#log">log</a></li>
+</ul>
+<p><span id="concat"></p>
+<h2 id="concat">concat</h2>
+<p></span></p>
+<p>The concat callback takes 2 or more arguments, which can be either all arrays, or all string. </p>
+<p>The returned value is a concatenation of all the supplied arguments, either array or string.</p>
+<p>Returns null on failure, and can thus be used to fail a JSL rule</p>
+<pre><code>
+var JSL = require(&#39;../../..&#39;);
+
+var ruleset = [
+    [   { result : &#39;$x&#39; },
+        { $call : [ &#39;concat&#39;,
+            [ 1, 2 ,3 ],
+            [ 4, 5, 6 ],
+            [&#39;$x&#39;]
+        ]}
+    ],
+    [   { result : &#39;$x&#39; },
+        { $call : [ &#39;concat&#39;, 
+            [ 1, 2 ,{ a : 1, b : 2 } ],
+            [ 4, 5, { a : 3, c : 4 } ],
+            [&#39;$x&#39;]
+        ]}
+    ],
+
+    [   { result : &#39;$x&#39; },
+        { $call : [ &#39;concat&#39;, 
+            &#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;d&#39;, [&#39;$x&#39;]
+        ]}
+    ],
+
+    [   { result : &#39;$x&#39; },
+        { $call : [ &#39;concat&#39;, 
+            [&#39;a&#39;, &#39;b&#39;], [&#39;c&#39;, &#39;d&#39;], [&#39;e&#39;, &#39;f&#39;], [&#39;$x&#39;]
+        ]}
+    ],
+
+    /* failure cases */
+
+    /* mixing of strings and arrays not allowed */
+
+    [   { result : &#39;$x&#39; },
+        { $call : [ &#39;concat&#39;, 
+            &#39;a&#39;, &#39;b&#39;, &#39;c&#39;, [&#39;d&#39;], [&#39;$x&#39;]
+        ]}
+    ],
+
+    /* concat will not work with objects */
+    [   { result : &#39;$x&#39; },
+        { $call : [ &#39;concat&#39;,
+            {a:1, b:2}, 
+            {c:3, d:4}, 
+            [&#39;$x&#39;]
+        ]}
+    ]
+
+];
+
+var query =     [{result : &#39;$result&#39;}];
+var transform = &#39;$result&#39;;
+
+var jsl = new JSL ({rules : ruleset, query: query, transform : transform});
+var response = jsl.run();
+
+module.exports = response;
+
+
+/*
+response 
+
+[
+    [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+    ],
+    [
+        1,
+        2,
+        {
+            &quot;a&quot;: 1,
+            &quot;b&quot;: 2
+        },
+        4,
+        5,
+        {
+            &quot;a&quot;: 3,
+            &quot;c&quot;: 4
+        }
+    ],
+    &quot;abcd&quot;,
+    [
+        &quot;a&quot;,
+        &quot;b&quot;,
+        &quot;c&quot;,
+        &quot;d&quot;,
+        &quot;e&quot;,
+        &quot;f&quot;
+    ]
+]
+
+*/
+</code></pre><p><span id="extend"></p>
+<h2 id="extend">extend</h2>
+<p></span></p>
+<p>The extend callback takes 2 arguments. It merges the first object into the second object, and returns the resulting object. The second object takes priority over the first in cases of overlaps. </p>
+<p>extend only works when both arguments are strictly {objects}.</p>
+<p>Returns null on failure, and can thus be used to fail a JSL rule</p>
+<p>The following examples illustrate the semantics of extend :</p>
+<pre><code>
+var JSL = require(&#39;../../..&#39;);
+
+var ruleset = [
+    [   { result : &#39;$x&#39; },
+        { $call : [ &#39;extend&#39;, 
+            { a : 1, b : 2 },
+            { c : 3, d : 4 },
+            [&#39;$x&#39;]
+        ]}
+    ],
+    [   { result : &#39;$x&#39; },
+        { $call : [  &#39;extend&#39;, 
+            { a : 1, b : 2 },
+            { a : 3, d : 4 }, // &lt;-- a will be set to 3
+            [&#39;$x&#39;]
+        ]}
+    ],
+    [   { result : &#39;$x&#39; },
+        { $call : [  &#39;extend&#39;, 
+            { a : { x : &#39;a&#39;, y : &#39;q&#39;} , b : 2 },
+            { a : 3, d : 4 },  // &lt;-- a will be set to 3
+            [&#39;$x&#39;]
+        ]}
+    ],
+    [   { result : &#39;$x&#39; },
+        { $call : [  &#39;extend&#39;, 
+            { a : 3, d : 4 }, 
+            { a : { x : &#39;a&#39;, y : &#39;q&#39;} , b : 2 }, // &lt;-- a will be set to {x:&#39;a&#39;, y:&#39;b&#39;}
+            [&#39;$x&#39;]
+        ]}
+    ],
+    /* extend will not work with arrays */
+    [   { result : &#39;$x&#39; },
+        { $call : [  &#39;extend&#39;, 
+            [1,2,3], 
+            [4,5,6], 
+            [&#39;$x&#39;]
+        ]}
+    ]
+
+];
+
+var query =     [{result : &#39;$result&#39;}];
+var transform = &#39;$result&#39;;
+
+var jsl = new JSL ({rules : ruleset, query: query, transform : transform});
+var response = jsl.run();
+
+module.exports = response;
+
+
+/*
+response 
+
+[
+    {
+        &quot;a&quot;: 1,
+        &quot;b&quot;: 2,
+        &quot;c&quot;: 3,
+        &quot;d&quot;: 4
+    },
+    {
+        &quot;a&quot;: 3,
+        &quot;b&quot;: 2,
+        &quot;d&quot;: 4
+    },
+    {
+        &quot;a&quot;: 3,
+        &quot;b&quot;: 2,
+        &quot;d&quot;: 4
+    },
+    {
+        &quot;a&quot;: {
+            &quot;x&quot;: &quot;a&quot;,
+            &quot;y&quot;: &quot;q&quot;
+        },
+        &quot;d&quot;: 4,
+        &quot;b&quot;: 2
+    }
+]
+
+*/
+</code></pre><p><span id="length"></p>
+<h2 id="length">length</h2>
+<p></span></p>
+<p>Takes an object (JS Array or Object) and returns the number of keys in it. Trivial wrapper around Object.keys().length</p>
+<p>Works only on objects, not scalars.</p>
+<p>Returns null on failure, and can thus be used to fail a JSL rule</p>
+<p><span id="keys"></p>
+<h2 id="keys">keys</h2>
+<p></span></p>
+<p>Takes an object (JS Array or Object) and returns its keys in an array, which can be captured with [&#39;$outVar&#39;]. Trivial wrapper around Object.keys()</p>
+<p>Works only on objects, not scalars.</p>
+<p>Returns null on failure, and can thus be used to fail a JSL rule</p>
+<p><span id="objequal"></p>
+<h2 id="objequal">objEqual</h2>
+<p></span></p>
+<p>objEqual takes two objects as input parameters and returns true if they are equal, i.e. of same type and having the same values.</p>
+<p>Returns null on failure, and can thus be used to fail a JSL rule</p>
+<p><span id="objNotequal"></p>
+<h2 id="objnotequal">objNotEqual</h2>
+<p></span></p>
+<p>The opposite of objEqual. Takes two objects as input parameters and returns true if they are <em>not</em> equal, i.e. of same type and having the same values.</p>
+<p>Returns null on failure, and can thus be used to fail a JSL rule</p>
+<p><span id="objgetvalue"></p>
+<h2 id="objgetvalue">objGetValue</h2>
+<p></span></p>
+<p>Takes an object (JS Array or Object) and a key, returns object[key] if it exists (i.e. is not undefined)</p>
+<p>Returns null on failure, and can thus be used to fail a JSL rule</p>
+<p><span id="parselist"></p>
+<h2 id="parselist">parseList</h2>
+<p></span></p>
+<p>The parseList callback accepts an array as input parameter, and returns an array consisting of 2 elements : </p>
+<pre><code>1. The first element of input array
+2. The remaining elements of input array
+</code></pre><p>parseList can be used to work with head and tail of a list (represented as a js array) in list processing algorithms</p>
+<p>A typical use of parseList would be as follows :</p>
+<pre><code>{ $call : [ &#39;parseList&#39;, &#39;$list&#39;, [&#39;$head&#39;, &#39;$body&#39;]] } // &#39;$head&#39; and &#39;$body&#39; contain the head and body of the &#39;$list&#39; 
+</code></pre><p>Works only on JS Arrays</p>
+<p>Returns null on failure, and can thus be used to fail a JSL rule</p>
+<p><span id="isnull"></p>
+<h2 id="isnull">isNull</h2>
+<p></span></p>
+<p>Takes a single input parameter and tests its value to be strictly a javascript null.</p>
+<p>Returns null on failure, and can thus be used to fail a JSL rule</p>
+<p><span id="notnull"></p>
+<h2 id="notnull">notNull</h2>
+<p></span></p>
+<p>Takes a single input paramter and tests its value to be not strictly a javascript null.</p>
+<p>Returns null on failure, and can thus be used to fail a JSL rule</p>
+<p><span id="log"></p>
+<h2 id="log">log</h2>
+<p></span></p>
+<p>The log callback emits its parameters to the console log if available. It can be a useful debugging and tracing tool.</p>
+<p>The log callback never fails, so cannot be used to fail the JSL rule.</p>
+
+    </body>
+</html>

@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="../css/github.css">
+        <title></title>
+    </head>
+    <body>
+        <p><a href="/docs/jsl/html/index.html">index</a></p>
+<hr>
+<h1 id="jsl-overview">JSL Overview</h1>
+<p>JSL is a JSON based logic programming library. It is meant to be used as an embedded rules engine in JS applications which use JSON as their data format.</p>
+<p>We introduce JSL with a simple example that generates a trivial &#39;hello world&#39; message record when queried:</p>
+<pre><code>
+var JSL = require(&#39;../../..&#39;);
+
+var ruleset = [
+    [{
+        message : {
+            to : &#39;world&#39;,
+            subject : &#39;hello&#39;,
+            msgtext : &#39;hello world&#39;
+        }
+
+    }] 
+];
+
+var query = [{message : &#39;$x&#39;}];
+var transform = &#39;$x&#39;;
+
+var jsl = new JSL({rules: ruleset, query: query, transform: transform});
+
+var response = jsl.run();
+
+module.exports = response;
+
+
+/*  
+response 
+
+[
+    {
+        &quot;to&quot;: &quot;world&quot;,
+        &quot;subject&quot;: &quot;hello&quot;,
+        &quot;msgtext&quot;: &quot;hello world&quot;
+    }
+]
+
+*/
+</code></pre><p>The example shows some important characteristics of JSL.</p>
+<ul>
+<li><p>JSL rules and query are nothing but (JSON serializable) JS objects. </p>
+</li>
+<li><p>A set of JSL rules is an array of array of objects.</p>
+</li>
+<li><p>Variables are allowed in both rules and query as values of keys in JS objects. Any value string which starts with &#39;$&#39; is a variable. </p>
+</li>
+<li><p>JSL execution proceeds by unifying the query object with rules.</p>
+</li>
+<li><p>JSL execution produces one or more fully instantiated versions of the given query object, i.e. all variables in the query are replaced with matching structures from the ruleset.</p>
+</li>
+<li><p>JSL output can be shaped using a transform specification, which guides JSL to produce an array of the shape desired. In the example, <code>var transform = &#39;$x&#39;</code>  caused the output to be an array of whatever &#39;$x&#39; was instantiated with, i.e. message records. If the transform is left unspecified, the result is an array of arrays, i.e. a valid JSL batch, with each element of the outer array becoming a fully instantiated version of the query object.</p>
+</li>
+</ul>
+<p><span id="unification"></p>
+<h2 id="unification">Unification</h2>
+<p></span></p>
+<p>We introduce some data binding in our message record:</p>
+<pre><code>
+var JSL = require(&#39;../../..&#39;);
+
+var ruleset = [
+    [ //head
+     {
+        message : {
+            to : &#39;$to&#39;,
+            subject : &#39;$subject&#39;,
+            msgtext : &#39;$msgtext&#39;
+        }
+
+    }, 
+    //body
+    { row : { to : &#39;$to&#39; } },
+    { row : { subject : &#39;$subject&#39; } },
+    { row : { msgtext : &#39;$msgtext&#39; } }
+    ] 
+];
+
+var query = [{message : &#39;$x&#39;}];
+var transform = &#39;$x&#39;;
+
+// facts (or data)
+var row = [
+    [{ row : { 
+            to : &#39;sales@vinod-denim.com&#39;,
+            subject : &#39;Follow up on our order&#39;,
+            msgtext : &#39;Please send us an update on shipping status&#39;
+        }
+    }]
+];
+
+var jsl = new JSL({rules : ruleset.concat(row), query: query, transform: transform});
+var response = jsl.run();
+
+module.exports = response;
+
+
+/*
+response 
+
+[
+    {
+        &quot;to&quot;: &quot;sales@vinod-denim.com&quot;,
+        &quot;subject&quot;: &quot;Follow up on our order&quot;,
+        &quot;msgtext&quot;: &quot;Please send us an update on shipping status&quot;
+    }
+]
+
+*/
+</code></pre><p>The ruleset array now contains a single rule which is an array of objects;  The first object is the <em>head</em>, and the remaining objects, if any, constitute the <em>body</em> of the rule.</p>
+<p>The row array also has a single rule which is an array of objects; in this case there is only one object in the array (the row). It has a <em>head</em>, but no <em>body</em>. This type of rule is a <em>fact</em> ; it has a <em>head</em> but no <em>body</em> . </p>
+<p>Finally, note that we concatenate ruleset and row before calling Jsl, combining all rules (including facts) into one array.</p>
+<p>For any given rule, the <em>head</em> is <em>satisfied</em> if each part of the <em>body</em> is <em>satisfied</em>. Thus <em>facts</em> are always <em>satisfied</em>. Each part of the <em>body</em> is <em>unified</em> against the set of rules, to find a rule where the <em>head</em> of the rule <em>matches</em> the body part.</p>
+<p>Since we are dealing with JS objects, we define <em>match</em> to mean containment, i.e. the body part must be fully contained in the head of the <em>matched</em> rule. In this example, the body part <code>{ row : {to : &#39;$to&#39;} }</code> is completely contained in the supplied row as a path. The variable &#39;$to&#39; is thus <em>unified</em> against the corresponding value in the row: &#39;sales@vinod-denim.com&#39;.</p>
+<p>Query execution proceeds by attempting to <em>satisfy</em> the query object by <em>unifying</em> it against the rules. If any rule <em>matches</em> the query, the unification proceeds recursively into its <em>body</em> parts, until there are no more <em>body</em> parts to be <em>satisfied</em> , or a <em>body</em> part fails to <em>unify</em>. All rules that <em>match</em> the query are tried. Thus a query can produce multiple results.</p>
+<p>In this example, the query <em>matches</em> the first message rule, and each <em>body</em> part of the message rule successfully unifies against the supplied row; so  we obtain a fully instantiated message object.</p>
+<p><span id="unify2objects"></p>
+<h2 id="simple-2-object-unification">Simple 2 object unification</h2>
+<p></span></p>
+<p>It is often desirable to unify two JS objects to check for containment, equality, or to merge their contents. The example below shows this pattern of usage.</p>
+<pre><code>
+var JSL = require(&#39;../../..&#39;);
+
+function unify2objects(obj1, obj2) {
+    var jsl = new JSL({
+        rules : [[obj1]],
+        query: [obj2],
+    });
+    return jsl.run();
+}
+
+var response = {};
+
+var obj1 = {
+    a : 1 ,
+    b : 2 , 
+    c : [ 3, 4, 5 ],
+    d : { e : 6, f : 7 }
+}
+
+var obj2 = {
+    a : 1 ,
+    b : &#39;$x&#39; , 
+    c : [ 3, &#39;$y&#39;, 5 ],
+    d : { e : 6, f : &#39;$z&#39; }
+}
+
+response.u12 = unify2objects(obj1, obj2);
+
+var obj3 = {
+    a : 1 ,
+    b : 2 , 
+    c : &#39;$x&#39;,
+    d : &#39;$y&#39;
+}
+
+response.u13 = unify2objects(obj1, obj3);
+
+var obj5 = {
+    a : 1 ,
+    b : 2 , 
+    c : &#39;$x&#39;,
+    d : { e : 6, f : 7 }
+}
+
+response.u15 = unify2objects(obj1, obj5);
+
+var obj6 = {
+    a : 1 ,
+    b : 2 , 
+    c : [ 3, 4, 5 ],
+    d : &#39;$y&#39;
+}
+
+response.u56 = unify2objects(obj5, obj6);
+
+var obj7 = {
+    a : 1 ,
+    b : 2 , 
+    c : &#39;$x&#39;,
+}
+
+
+response.u67 = unify2objects(obj6, obj7);
+response.u76 = unify2objects(obj7, obj6);
+
+module.exports = response;
+
+
+/*
+response 
+
+{
+    &quot;u12&quot;: [
+        [
+            {
+                &quot;a&quot;: 1,
+                &quot;b&quot;: 2,
+                &quot;c&quot;: [
+                    3,
+                    4,
+                    5
+                ],
+                &quot;d&quot;: {
+                    &quot;e&quot;: 6,
+                    &quot;f&quot;: 7
+                }
+            }
+        ]
+    ],
+    &quot;u13&quot;: [
+        [
+            {
+                &quot;a&quot;: 1,
+                &quot;b&quot;: 2,
+                &quot;c&quot;: [
+                    3,
+                    4,
+                    5
+                ],
+                &quot;d&quot;: {
+                    &quot;e&quot;: 6,
+                    &quot;f&quot;: 7
+                }
+            }
+        ]
+    ],
+    &quot;u15&quot;: [
+        [
+            {
+                &quot;a&quot;: 1,
+                &quot;b&quot;: 2,
+                &quot;c&quot;: [
+                    3,
+                    4,
+                    5
+                ],
+                &quot;d&quot;: {
+                    &quot;e&quot;: 6,
+                    &quot;f&quot;: 7
+                }
+            }
+        ]
+    ],
+    &quot;u56&quot;: [
+        [
+            {
+                &quot;a&quot;: 1,
+                &quot;b&quot;: 2,
+                &quot;c&quot;: [
+                    3,
+                    4,
+                    5
+                ],
+                &quot;d&quot;: {
+                    &quot;e&quot;: 6,
+                    &quot;f&quot;: 7
+                }
+            }
+        ]
+    ],
+    &quot;u67&quot;: [
+        [
+            {
+                &quot;a&quot;: 1,
+                &quot;b&quot;: 2,
+                &quot;c&quot;: [
+                    3,
+                    4,
+                    5
+                ]
+            }
+        ]
+    ],
+    &quot;u76&quot;: []
+}
+
+*/
+</code></pre><p>The examples show that it is possible to have variables in both objects being unified. The result yields a merged object with variables instantiated on both sides to the extent possible.</p>
+<p>The last two examples <code>unify2objects(obj6,obj7)</code> and <code>unify2objects(obj7,obj6)</code> show the one sided nature of unification in Jsl, as defined by object containment. Since obj7 is contained in obj6, but not the other way round, we get a result in the first case but not the second.</p>
+<p>It is possible to extend this example to check for unification in both directions to implement a more general purpose unifier that succeeds irrespective of the order of arguments. Object equality can be checked by unifying in both directions and checking for success. The transform parameter can be defined upon any variables in obj2 (which is used as the query in the function unify2objects) to shape output results.</p>
+<p><span id="builtins"></p>
+<h2 id="builtins">Builtins</h2>
+<p></span></p>
+<p>JSL supports a few important builtins as part of the language. Please refer to the <a href="/docs/jsl/html/builtins.html">builtins chapter</a> for a complete description. We introduce builtins here by extending our message template to supply the subject as default msgtext in case msgtext is not supplied. </p>
+<p>We also simplify the unification of the various variables (to, subject, msgtext) against supplied row by using the <strong>$bind</strong>  builtin.</p>
+<pre><code>
+var JSL = require(&#39;../../..&#39;);
+
+var ruleset = [
+    [
+        {
+            message : {
+                to : &#39;$to&#39;,
+                subject : &#39;$subject&#39;,
+                msgtext : &#39;$msgtext&#39;
+            }
+
+        },
+        { row : &#39;$row&#39;},
+        { $or : [ 
+            {$bind : [ &#39;$row&#39;, {to : &#39;$to&#39;, subject : &#39;$subject&#39;, msgtext : &#39;$msgtext&#39;}] },
+            {$bind : [ [&#39;$row&#39;, &#39;$msgtext&#39;],  [{to : &#39;$to&#39;, subject : &#39;$subject&#39;}, &#39;$subject&#39;] ] },
+        ]}
+    ]
+];
+
+var query =     [{message : &#39;$x&#39;}];
+var transform = &#39;$x&#39;;
+
+var row = [
+    [{ row : { 
+            to : &#39;sales@vinod-denim.com&#39;,
+            subject : &#39;Follow up on our order&#39;,
+            //msgtext : &#39;Please send us an update on shipping status&#39;
+        }
+    }]
+
+];
+
+var jsl = new JSL({rules : ruleset.concat(row), query: query, transform: transform});
+var response = jsl.run();
+
+module.exports = response;
+
+
+/*
+response 
+
+[
+    {
+        &quot;to&quot;: &quot;sales@vinod-denim.com&quot;,
+        &quot;subject&quot;: &quot;Follow up on our order&quot;,
+        &quot;msgtext&quot;: &quot;Follow up on our order&quot;
+    }
+]
+
+*/
+</code></pre><p>The extraction of data from the row is now done with <strong>$bind</strong> objects, each handling a &quot;pattern&quot; of row expected within an overall <strong>$or</strong> object. Both <strong>$bind</strong> and <strong>$or</strong> are builtins provided by JSL. </p>
+<p>As the example shows, the row has its msgtext commented out, but the response contains msgtext properly forced to be subject text.</p>
+<p>This relatively non-trivial example works as follows :</p>
+<ul>
+<li><p>The head of the message rule specifies the structure of the message record as usual</p>
+</li>
+<li><p>The first body part <code>{ row : &#39;$row&#39;}</code>  simply extracts all possible rows in the dataset. Contrast this with the earlier approach where we focused on extracting individual data items (to, subject, msgtext). The reader can try the earlier approach with multiple rows as shown below, and verify that it yields an explosion of results, one for each possible way to find any value for each variable.</p>
+</li>
+<li><p>The next body part is a binding specification. It uses the <strong>$or</strong> builtin to support two possible scenarios :</p>
+<pre><code>  { $or : [
+      { $bind : [ &#39;$row&#39;, {to : &#39;$to&#39;, subject : &#39;$subject&#39;, msgtext : &#39;$msgtext&#39;}] },
+      { $bind : [ [&#39;$row&#39;, &#39;$msgtext&#39;],  [{to : &#39;$to&#39;, subject : &#39;$subject&#39;}, &#39;$subject&#39;] ] },
+  ]}
+</code></pre><ul>
+<li>a fully formed row with to, subject, and msgtext present</li>
+<li>a partial row with only to and subject present; the <strong>$bind</strong> util rule is used to bind the partial row with expected variables, and another binding is provided to force $msgtext to unify with $subject. Note how <strong>$bind</strong> is used to unify an array of objects to another array of objects. In general, <strong>$bind</strong> can be used to attempt unification of any js object to any other js object.</li>
+</ul>
+</li>
+</ul>
+<p>The general shape of builtins is as follows :</p>
+<pre><code>    { &lt;$xxx&gt; : [ arg1 , arg2 ... ] }
+</code></pre><p>The <strong>$bind</strong> utility rule has the following (internal) implementation:</p>
+<pre><code>    { $bind : [ &#39;$x&#39;, &#39;$x&#39; ] }
+</code></pre><p>Note that a builtin object can have only one key, which must be a $prefixed name of a valid builtin. In this example, we used two builtins : <strong>$or</strong>, <strong>$and</strong>.</p>
+<p>Also note that <strong>$bind</strong> is nothing but the equivalent of the familiar <em>unify</em> utility in logic programming languages. It succeeds if the two arguments unify with each other (JSL defines unification as first argument containing the second at all levels). So the first call to <strong>$bind</strong> succeeds if the $row has all 3 specified keys. The second call to <strong>$bind</strong> will succeed with just 2 keys in the $row. It should be obvious that the more restrictive condition (3 keys) should be checked first.</p>
+<p>The number of arguments to a builtin can vary depending upon the builtin. For example, <strong>$or</strong> and <strong>$and</strong> can have any number;  <strong>$bind</strong>  can have only 2.</p>
+<p><span id="callbacks"></p>
+<h2 id="callbacks">Callbacks</h2>
+<p></span></p>
+<p>Since JSL is intended to be an embedded logic programming library, it supports callbacks into the host. This is done using a special builtin: <strong>$call</strong></p>
+<p>We illustrate the use of callbacks by applying a timestamp to our message object :</p>
+<pre><code>
+var JSL = require(&#39;../../..&#39;);
+
+var ruleset = [
+    [
+        {
+            message : {
+                to : &#39;$to&#39;,
+                subject : &#39;$subject&#39;,
+                date : &#39;$date&#39;,
+                msgtext : &#39;$msgtext&#39;
+            }
+
+        },
+        { row : &#39;$row&#39;},
+        { $or : [ 
+            {$bind : [ &#39;$row&#39;, {to : &#39;$to&#39;, subject : &#39;$subject&#39;, msgtext : &#39;$msgtext&#39;}] },
+            {$bind : [ [&#39;$row&#39;, &#39;$subject&#39;],  [{to : &#39;$to&#39;, subject : &#39;$subject&#39;}, &#39;$msgtext&#39;] ] },
+        ]},
+        { $call : [ &#39;getDate&#39;, [&#39;$date&#39;] ] }
+    ]
+];
+
+var query =     [{message : &#39;$x&#39;}];
+var transform = &#39;$x&#39;;
+
+var row = [
+    [{ row : { 
+            to : &#39;sales@vinod-denim.com&#39;,
+            subject : &#39;Follow up on our order&#39;,
+            //msgtext : &#39;Please send us an update on shipping status&#39;
+        }
+    }]
+
+];
+
+var callbacks = {
+    getDate : function() { 
+                return new Date().toString()
+            }
+};
+
+var jsl = new JSL({rules : ruleset.concat(row), query: query, transform : transform, callbacks : callbacks }); 
+var response = jsl.run();
+
+module.exports = response;
+
+
+/*
+response 
+
+[
+    {
+        &quot;to&quot;: &quot;sales@vinod-denim.com&quot;,
+        &quot;subject&quot;: &quot;Follow up on our order&quot;,
+        &quot;date&quot;: &quot;Tue May 03 2016 14:30:22 GMT-0700 (PDT)&quot;,
+        &quot;msgtext&quot;: &quot;Follow up on our order&quot;
+    }
+]
+
+*/
+</code></pre><p>As the example shows, there is now a date key in the head of the message rule, whose value is obtained by an additional body object at the end: <code>{ $call : [ &#39;getDate&#39;, [&#39;$date&#39;] ] }</code>,  which uses the <strong>$call</strong> builtin to call the supplied callback getDate and bind its return value to the $date variable.</p>
+<p>The callback itself is supplied as a function valued key in the callbacks object given to Jsl as part of its parameters.</p>
+<pre><code>var jsl = new JSL({rules : ruleset.concat(row), query: query, transform : transform, callbacks : callbacks});
+</code></pre><p>The shape of the <strong>$call</strong> builtin is as follows :</p>
+<pre><code>    { $call : [ &lt;&#39;cbname&#39;&gt;, arg1, arg2, ..., [&#39;$outvar&#39;] ] }
+</code></pre><p>The first argument to $call is the name of the callback to be called. This callback function should be present in the callbacks parameter when running Jsl. Subsequent arguments are handed to the callback by position with the exception of [&#39;$outvar&#39;] if present. Note that an array object at the end of the parameters list is assumed to specify the $outvar. Any value returned by the callback is <em>unified</em> with the $outvar. Typically there are two ways to use $outvar:</p>
+<ol>
+<li><p>Supply a variable, so it captures the return value of the callback</p>
+<ul>
+<li><code>{$call : [ &#39;getTime&#39;, [&#39;$x&#39;] ]}</code> will return the current time in $x.</li>
+</ul>
+</li>
+<li><p>Supply a literal value, so that the callback succeeds only if it returns something that can be <em>unified</em> with it</p>
+<ul>
+<li><code>{$call : [ &#39;getDay&#39;, [&#39;Monday&#39;] ]}</code> will fail unless getDay returns &#39;Monday&#39;, assuming getDay needs no arguments</li>
+</ul>
+</li>
+</ol>
+<p><em>Please note that if the callback requires an array valued parameter at the end, it must be supplied at least an empty array as the last parameter in the <strong>$call</strong> parameter list in order to avoid confusing the last input parameter as the $outvar.</em></p>
+<p><span id="query"></p>
+<h2 id="querying-multiple-rows-of-data-with-varying-structures">Querying multiple rows of data, with varying structures</h2>
+<p></span></p>
+<p>So far we have worked with one row of data. We can now try our message generation sample on multiple rows as follows:</p>
+<pre><code>
+var JSL = require(&#39;../../..&#39;);
+
+var ruleset = [
+    [
+        {
+            message : {
+                to : &#39;$to&#39;,
+                subject : &#39;$subject&#39;,
+                date : &#39;$date&#39;,
+                msgtext : &#39;$msgtext&#39;,
+            }
+
+        },
+        { row : &#39;$row&#39;},
+        { $or : [ 
+            {$bind : [ &#39;$row&#39;, {to : &#39;$to&#39;, subject : &#39;$subject&#39;, msgtext : &#39;$msgtext&#39;}] },
+            {$bind : [ [&#39;$row&#39;, &#39;$subject&#39;],  [{to : &#39;$to&#39;, subject : &#39;$subject&#39;}, &#39;$msgtext&#39;] ] },
+        ]},
+        { $call : [ &#39;getDate&#39;, [&#39;$date&#39;] ] }
+    ],
+
+
+];
+
+var query =     [{message : &#39;$x&#39;}];
+var transform = &#39;$x&#39;;
+
+var row = [
+    [{ row : { 
+            to : &#39;sales@vinod-denim.com&#39;,
+            subject : &#39;Follow up on our order&#39;,
+            msgtext : &#39;Please send us an update on shipping status&#39;
+        }
+    }],
+    [{ row : { 
+            to : &#39;sales@agarwal-textiles.com&#39;,
+            subject : &#39;Request for quotation&#39;,
+            //msgtext : &#39;Please quote your best price for 1500 meters of gray cotton fabric&#39;
+        }
+    }]
+
+
+];
+
+var callbacks = {
+    getDate : function() { 
+                return new Date().toString()
+            }
+};
+
+var jsl = new JSL({rules : ruleset.concat(row), query: query, transform: transform, callbacks : callbacks});
+var response = jsl.run();
+
+module.exports = response;
+
+
+/*
+response 
+
+[
+    {
+        &quot;to&quot;: &quot;sales@vinod-denim.com&quot;,
+        &quot;subject&quot;: &quot;Follow up on our order&quot;,
+        &quot;date&quot;: &quot;Tue May 03 2016 14:30:22 GMT-0700 (PDT)&quot;,
+        &quot;msgtext&quot;: &quot;Please send us an update on shipping status&quot;
+    },
+    {
+        &quot;to&quot;: &quot;sales@agarwal-textiles.com&quot;,
+        &quot;subject&quot;: &quot;Request for quotation&quot;,
+        &quot;date&quot;: &quot;Tue May 03 2016 14:30:22 GMT-0700 (PDT)&quot;,
+        &quot;msgtext&quot;: &quot;Request for quotation&quot;
+    }
+]
+
+*/
+</code></pre><p>Note that we only needed to add another array to the array of arrays containing rows. We could add any number of rows, possibly fetching them from a database.</p>
+<p>The response shows expected results, one for each supplied row. It correctly detects and handles both possible &quot;shapes&quot; of row. Also note the effect of the trssansform specification; we get an array of objects, each object was the unified value of &#39;$x&#39;.</p>
+<p><span id="why-jsl"></p>
+<h2 id="why-jsl">Why JSL</h2>
+<p></span></p>
+<p>We have found JSL useful for the following tasks :</p>
+<ul>
+<li><p>Data binding </p>
+<ul>
+<li>As described in <a href="/docs/jsl/html/overview.html">this overview</a>, data binding involves filling out &quot;holes&quot; in a JS object using data supplied as another set of JS objects (i.e. parsed JSON)</li>
+</ul>
+</li>
+<li><p>Information Retrieval</p>
+<ul>
+<li>Maintain and query small, in-memory databases of non trivial complexity such as configurations, dependencies, etc. See  <a href="/docs/jsl/html/ir.html">information retrieval example</a>. The chapter is based on a textbook example, but covers salient concepts of information retrieval.</li>
+</ul>
+</li>
+<li><p>Test automation </p>
+<ul>
+<li>Specification of expected output from a JSON returning api, see  <a href="/docs/jsl/html/test.html">test automation example </a></li>
+</ul>
+</li>
+</ul>
+<p>We expect JSL to find more applications over time as an embedded logic-programming library for JS/JSON.</p>
+
+    </body>
+</html>

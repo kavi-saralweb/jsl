@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="../css/github.css">
+        <title></title>
+    </head>
+    <body>
+        <p><a href="/docs/jsl/html/index.html">index</a></p>
+<hr>
+<h1 id="example-test-automation">Example: Test Automation</h1>
+<p><span id="problem-overview"></p>
+<h2 id="test-output-verification">Test output verification</h2>
+<p></span></p>
+<p>Consider a module which takes a JSON structure as input, and returns a JSON structure as output. Our task is to write a runnable test program which exercises this module and verifies whether it produces the correct (expected) output for a given set of inputs.</p>
+<p>We propose using JSL to solve the output verification problem, i.e. check whether a given JSON structure returned by the module matches some expectation we have. We can code our expectation of the output result in two ways : </p>
+<ol>
+<li><p>Use the equivalent of <a href="/docs/jsl/html/overview.html#unify2objects">unify2objects</a> approach to specify a pattern (js object) which matches the server result</p>
+</li>
+<li><p>Model the behavior of the module using a set of JSL rules (and possibly callbacks), then write multiple tests whose response is checked against teh JSL model.</p>
+</li>
+</ol>
+<p>The first approach is quick and sufficient for many testing  requirements. The second approach is more powerful and offers better api coverage since all possible combinations of inputs can be (potentially programatically) tested against a single model which can be maintained as a testable specification.</p>
+<p><span id="chai-jsl-intro"></p>
+<h2 id="chai-jsl-plugin">Chai-JSL plugin</h2>
+<p></span></p>
+<p>The chai-jsl plugin implements both approaches as two methods (pattern and patternFromRules) which can be used within a mocha/chai test automation framework. </p>
+<p>To illustrate these methods by example, we consider a (somewhat naive) authentication module which validates a given userid password combination and logs-in the user if valid, emits an error message if not, blocks the user after 3 invalid logins, etc.</p>
+<p><em>Note: the JSL library uses chai-jsl for its own test automation suite.</em></p>
+<p><span id="auth-module"></p>
+<h2 id="the-authentication-module">The authentication module</h2>
+<p></span></p>
+<p>A simplistic implementation of this module can be reviewed in <a href="/docs/jsl/js/auth-module.js">auth-module.js</a>. The module maintains a list of known users and their passwords in a table, and implements trivial username/password checking upon it. The module also keeps track of failed login attempts via the ctr attribute in user table and blocks a user after 3 failed login attempts.</p>
+<p><span id="simple-test"></p>
+<h2 id="a-simple-test-with-_pattern_">A simple test with <em>pattern</em></h2>
+<p></span></p>
+<p>A simple login test is shown below. It invokes the login transaction with a known username/password, and expects to succeed. The expected object is given to the chai plugin as a pattern which must be contained in the server result. Note that the pattern can contain variables to indicate portions of the returned JSON structure which are not (or cannot be) known to the test. In this case, the status code has been assigned a variable value. Typically the timestamp returned by the server would be a variable value in the expected pattern since it is impossible to predict its exact value.</p>
+<pre><code>
+var auth = require(&#39;./auth-module.js&#39;);
+var chai = require(&#39;chai&#39;);
+var chaiJSL = require(&#39;chai-jsl&#39;);
+var expect = chai.expect;
+chai.use(chaiJSL);
+
+describe(&#39;Simple auth test&#39;, function() { 
+    describe(&#39;Using pattern method&#39;, function() { 
+        it(&#39;should successfully login&#39;, function(done) { 
+
+            var response = auth.login({
+                username : &#39;mohan&#39;, 
+                password : &#39;xyzw&#39;
+            });
+
+            var expectedResponse = { 
+                status: &#39;$s&#39;, 
+                logged_in: true 
+            };
+            expect(response).to.have.pattern(expectedResponse);
+            done();
+        }); 
+    });
+});
+</code></pre><p><span id="rules-test"></p>
+<h2 id="a-rules-based-test-specification-using-_patternfromrules_">A rules based test specification using <em>patternFromRules</em></h2>
+<p></span></p>
+<p>A more complete specification of expected module behavior is given below. The set of JSL rules support a query of the form <code>[{expectedResponse : &#39;$expectedResponse}]</code>. The specific inputs are supplied as facts (txn, username, and password). The test specification also maintains a set of callbacks and state variables to track failed login attempts, as well as a set of facts to remember known (test) usernames/passwords. </p>
+<p>As can be seen, the test specification is entirely independent of the actual implementation of the module. It can predict the expectedResponse of the server given any (reasonable) combination and sequence of inputs.</p>
+<p>A series of tests is defined as an array by giving values to the inputs : txn, username, password. The tests are run under mocha/chai-jsl, using the patternFromRules method.</p>
+<p>Thus JSL is used to build a high level logical model of the api being tested. The model is used to verify output generated from various combination of input parameters, and can be maintained as the api evolves. </p>
+<pre><code>
+var auth = require(&#39;./auth-module.js&#39;);
+var chai = require(&#39;chai&#39;);
+var chaiJSL = require(&#39;chai-jsl&#39;);
+var expect = chai.expect;
+chai.use(chaiJSL);
+
+
+/* the rules which specify module response given some inputs (txn, username, password) */
+
+var expectedResponseRules = [
+    [
+        { expectedResponse : &#39;$response&#39; },
+        { txn : &#39;login&#39;},
+        { checkLogin : &#39;$response&#39;}
+    ],
+    [
+        { expectedResponse : &#39;$response&#39; },
+        { txn : &#39;logout&#39;},
+        { checkLogout : &#39;$response&#39;}
+    ],
+
+    [ 
+        { checkLogin : &#39;$response&#39; },
+        { username : &#39;$username&#39;},
+        { password : &#39;$password&#39;},
+        { $or : [ 
+            { $and : [ 
+                {$call : [ &#39;checkBlocked&#39;, &#39;$username&#39; ] },
+                { $bind : [ &#39;$response&#39;, { status: 200, logged_in: false, msg : &#39;Account blocked&#39; } ] }
+            ] },
+            { $and : [ 
+                { testDb : [ &#39;$username&#39;, &#39;$password&#39;] },
+                { $call : [ &#39;zeroCtr&#39;, &#39;$username&#39; ] },
+                { $bind : [ &#39;$response&#39;, { status: 200, logged_in: true } ] }
+            ] },
+            { $and : [ 
+                { $not : [ { testDb : [ &#39;$username&#39; ] } ] },
+                { $bind : [ &#39;$response&#39;, { status: 200, logged_in: false, msg : &#39;Incorrect username&#39; } ] }
+            ] },
+            { $and : [
+                { $call : [ &#39;incrementCtr&#39;, &#39;$username&#39; ] },
+                { $bind : [ &#39;$response&#39;, { status: 200, logged_in: false, msg : &#39;Incorrect password&#39; } ] }
+            ] }
+        ] }
+    ],
+    [ 
+        { checkLogout : &#39;$response&#39; },
+        { username : &#39;$username&#39;},
+        { $or : [ 
+            { $and : [ 
+                { $not : [ { testDb : [ &#39;$username&#39; ] } ] },
+                { $bind : [ &#39;$response&#39;, { status: 200, msg : &#39;Incorrect logout attempt&#39; } ] }
+            ] },
+            { $bind : [ &#39;$response&#39;, { status: 200, logged_in: false, msg : &#39;Successfully logged out&#39; } ] }
+        ] }
+    ],
+
+    /* known test users with their passwords */
+    [ { testDb : [ &#39;mohan&#39; , &#39;xyzw&#39; ] } ],
+    [ { testDb : [ &#39;shyam&#39; , &#39;abcd&#39; ] } ]
+];
+
+/* state keeping machinery to track failed login attempts when running tests */
+var counters = {};
+var callbacks = {
+    zeroCtr : function(username) {
+        counters[username] = 0;
+        return true;
+    },
+    incrementCtr : function(username) {
+        if (counters[username] != null) {
+            counters[username]++;
+        }
+        else {
+            counters[username] = 1;
+        }
+        return true;
+    },
+    checkBlocked : function(username) {
+        /* callback should return null to fail the JSL rule */
+        return counters[username] != null &amp;&amp; counters[username] &gt;= 3 ? true : null
+    }
+}
+
+var tests = [
+    {
+        name : &#39;login&#39;,
+        description : &#39;should successfully login&#39;,
+        txn : &#39;login&#39;,
+        username : &#39;mohan&#39;,
+        password : &#39;xyzw&#39;
+    },
+    {
+        name : &#39;login-incorrect-pwd1&#39;,
+        description : &#39;incorrect password should fail login (1)&#39;,
+        txn : &#39;login&#39;,
+        username : &#39;mohan&#39;,
+        password : &#39;xxx&#39;
+    },
+    {
+        name : &#39;login-incorrect-pwd2&#39;,
+        description : &#39;incorrect password should fail login (2)&#39;,
+        txn : &#39;login&#39;,
+        username : &#39;mohan&#39;,
+        password : &#39;yyy&#39;
+    },
+    {
+        name : &#39;login-incorrect-pwd3&#39;,
+        description : &#39;incorrect password should fail login (3)&#39;,
+        txn : &#39;login&#39;,
+        username : &#39;mohan&#39;,
+        password : &#39;zzz&#39;
+    },
+    {
+        name : &#39;login-blocked1&#39;,
+        description : &#39;incorrect pwd, but account should be blocked&#39;,
+        txn : &#39;login&#39;,
+        username : &#39;mohan&#39;,
+        password : &#39;xxx&#39;
+    },
+    {
+        name : &#39;login-blocked2&#39;,
+        description : &#39;correct pwd, but account should be blocked&#39;,
+        txn : &#39;login&#39;,
+        username : &#39;mohan&#39;,
+        password : &#39;xyzw&#39;
+    },
+    {
+        name : &#39;logout&#39;,
+        description : &#39;logout attempt on blocked account, should succeed&#39;,
+        txn : &#39;logout&#39;,
+        username : &#39;mohan&#39;,
+    },
+    {
+        name : &#39;login-blocked3&#39;,
+        description : &#39;login with correct pwd after logout on blocked account, but should still be blocked&#39;,
+        txn : &#39;login&#39;,
+        username : &#39;mohan&#39;,
+        password : &#39;xyzw&#39;
+    },
+
+];
+
+
+tests.forEach(function(t) {
+    describe(t.name, function() { 
+            it(t.description, function(done) { 
+                var response = auth[t.txn]({
+                    username : t.username, 
+                    password : t.password
+                });
+
+                var rules = expectedResponseRules.concat([
+                    [{txn : t.txn}],
+                    [{username : t.username}],
+                    [{password : t.password}]
+                ]);
+
+                expect(response).to.have.patternFromRules(rules, callbacks);
+                done();
+            });
+    });
+});
+</code></pre>
+    </body>
+</html>
