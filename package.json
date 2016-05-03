@@ -1,6 +1,6 @@
 {
   "name": "jsonlogic",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "JsonLogic is a JSON based logic programming library meant for embedded use",
   "main": "jsl.js",
   "directories": {
@@ -17,7 +17,7 @@
   "author": "Kavi Singh",
   "license": "MIT",
   "devDependencies": {
-    "mocha" : "2.4.5",
+    "mocha": "2.4.5",
     "chai": "^3.5.0",
     "chai-jsonlogic": "0.0.5",
     "grunt": "^0.4.5",
