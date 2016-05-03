@@ -1,0 +1,23 @@
+{
+    "bitwise"   : false,
+    "camelcase" : false,
+    "curly"     : true,
+    "eqeqeq"    : true,
+    "indent"    : 4,
+    "latedef"   : "nofunc",
+    "noarg"     : true,
+    "noempty"   : true,
+    "nonew"     : true,
+    "quotmark"  : "single",
+    "undef"     : true,
+    "unused"    : "vars",
+    "trailing"  : true,
+    "asi"       : true,
+    "boss"      : true,
+    "eqnull"    : true,
+    "expr"      : true,
+    "trailing"  : true,
+    "node"      : true,
+    "browser"   : true,
+    "predef"    : ["describe", "it"]
+}
