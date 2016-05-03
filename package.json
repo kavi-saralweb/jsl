@@ -1,6 +1,6 @@
 {
   "name": "jsl",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "JSL is a JSON based logic programming library meant for embedded use",
   "main": "jsl.js",
   "directories": {
@@ -19,6 +19,7 @@
   "devDependencies": {
     "mocha" : "2.4.5",
     "chai": "^3.5.0",
+    "chai-jsl": "0.0.1",
     "grunt": "^0.4.5",
     "grunt-md2html": "^0.3.0",
     "grunt-nunjucks-2-html": "^0.2.10",
