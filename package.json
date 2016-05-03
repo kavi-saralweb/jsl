@@ -1,6 +1,6 @@
 {
   "name": "jsonlogic",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "JsonLogic is a JSON based logic programming library meant for embedded use",
   "main": "jsl.js",
   "directories": {
