@@ -5,7 +5,7 @@
         <title></title>
     </head>
     <body>
-        <p><a href="/docs/jsl/html/index.html">index</a></p>
+        <p><a href="/docs/html/index.html">index</a></p>
 <hr>
 <h1 id="example-test-automation">Example: Test Automation</h1>
 <p><span id="problem-overview"></p>
@@ -14,7 +14,7 @@
 <p>Consider a module which takes a JSON structure as input, and returns a JSON structure as output. Our task is to write a runnable test program which exercises this module and verifies whether it produces the correct (expected) output for a given set of inputs.</p>
 <p>We propose using JSL to solve the output verification problem, i.e. check whether a given JSON structure returned by the module matches some expectation we have. We can code our expectation of the output result in two ways : </p>
 <ol>
-<li><p>Use the equivalent of <a href="/docs/jsl/html/overview.html#unify2objects">unify2objects</a> approach to specify a pattern (js object) which matches the server result</p>
+<li><p>Use the equivalent of <a href="/docs/html/overview.html#unify2objects">unify2objects</a> approach to specify a pattern (js object) which matches the server result</p>
 </li>
 <li><p>Model the behavior of the module using a set of JSL rules (and possibly callbacks), then write multiple tests whose response is checked against teh JSL model.</p>
 </li>
@@ -29,7 +29,7 @@
 <p><span id="auth-module"></p>
 <h2 id="the-authentication-module">The authentication module</h2>
 <p></span></p>
-<p>A simplistic implementation of this module can be reviewed in <a href="/docs/jsl/js/auth-module.js">auth-module.js</a>. The module maintains a list of known users and their passwords in a table, and implements trivial username/password checking upon it. The module also keeps track of failed login attempts via the ctr attribute in user table and blocks a user after 3 failed login attempts.</p>
+<p>A simplistic implementation of this module can be reviewed in <a href="/docs/js/auth-module.js">auth-module.js</a>. The module maintains a list of known users and their passwords in a table, and implements trivial username/password checking upon it. The module also keeps track of failed login attempts via the ctr attribute in user table and blocks a user after 3 failed login attempts.</p>
 <p><span id="simple-test"></p>
 <h2 id="a-simple-test-with-_pattern_">A simple test with <em>pattern</em></h2>
 <p></span></p>

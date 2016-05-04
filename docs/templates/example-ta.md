@@ -1,4 +1,4 @@
-[index](/docs/jsl/html/index.html)
+[index](/docs/html/index.html)
 
 ---
 
@@ -12,7 +12,7 @@ Consider a module which takes a JSON structure as input, and returns a JSON stru
 
 We propose using JSL to solve the output verification problem, i.e. check whether a given JSON structure returned by the module matches some expectation we have. We can code our expectation of the output result in two ways : 
 
-1. Use the equivalent of [unify2objects](/docs/jsl/html/overview.html#unify2objects) approach to specify a pattern (js object) which matches the server result
+1. Use the equivalent of [unify2objects](/docs/html/overview.html#unify2objects) approach to specify a pattern (js object) which matches the server result
 
 2. Model the behavior of the module using a set of JSL rules (and possibly callbacks), then write multiple tests whose response is checked against teh JSL model.
 
@@ -32,7 +32,7 @@ _Note: the JSL library uses chai-jsl for its own test automation suite._
 ## The authentication module
 </span>
 
-A simplistic implementation of this module can be reviewed in [auth-module.js](/docs/jsl/js/auth-module.js). The module maintains a list of known users and their passwords in a table, and implements trivial username/password checking upon it. The module also keeps track of failed login attempts via the ctr attribute in user table and blocks a user after 3 failed login attempts.
+A simplistic implementation of this module can be reviewed in [auth-module.js](/docs/js/auth-module.js). The module maintains a list of known users and their passwords in a table, and implements trivial username/password checking upon it. The module also keeps track of failed login attempts via the ctr attribute in user table and blocks a user after 3 failed login attempts.
 
 <span id="simple-test">
 ## A simple test with _pattern_

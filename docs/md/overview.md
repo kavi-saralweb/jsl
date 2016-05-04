@@ -1,4 +1,4 @@
-[index](/docs/jsl/html/index.html)
+[index](/docs/html/index.html)
 
 ---
 
@@ -316,7 +316,7 @@ It is possible to extend this example to check for unification in both direction
 ## Builtins
 </span>
 
-JSL supports a few important builtins as part of the language. Please refer to the [builtins chapter](/docs/jsl/html/builtins.html) for a complete description. We introduce builtins here by extending our message template to supply the subject as default msgtext in case msgtext is not supplied. 
+JSL supports a few important builtins as part of the language. Please refer to the [builtins chapter](/docs/html/builtins.html) for a complete description. We introduce builtins here by extending our message template to supply the subject as default msgtext in case msgtext is not supplied. 
 
 We also simplify the unification of the various variables (to, subject, msgtext) against supplied row by using the **$bind**  builtin.
 
@@ -481,7 +481,7 @@ response
     {
         "to": "sales@vinod-denim.com",
         "subject": "Follow up on our order",
-        "date": "Tue May 03 2016 18:54:04 GMT-0700 (PDT)",
+        "date": "Tue May 03 2016 18:57:22 GMT-0700 (PDT)",
         "msgtext": "Follow up on our order"
     }
 ]
@@ -586,13 +586,13 @@ response
     {
         "to": "sales@vinod-denim.com",
         "subject": "Follow up on our order",
-        "date": "Tue May 03 2016 18:54:04 GMT-0700 (PDT)",
+        "date": "Tue May 03 2016 18:57:22 GMT-0700 (PDT)",
         "msgtext": "Please send us an update on shipping status"
     },
     {
         "to": "sales@agarwal-textiles.com",
         "subject": "Request for quotation",
-        "date": "Tue May 03 2016 18:54:04 GMT-0700 (PDT)",
+        "date": "Tue May 03 2016 18:57:22 GMT-0700 (PDT)",
         "msgtext": "Request for quotation"
     }
 ]
@@ -611,13 +611,13 @@ The response shows expected results, one for each supplied row. It correctly det
 We have found JSL useful for the following tasks :
 
 - Data binding 
-  * As described in [this overview](/docs/jsl/html/overview.html), data binding involves filling out "holes" in a JS object using data supplied as another set of JS objects (i.e. parsed JSON)
+  * As described in [this overview](/docs/html/overview.html), data binding involves filling out "holes" in a JS object using data supplied as another set of JS objects (i.e. parsed JSON)
 
 - Information Retrieval
-  * Maintain and query small, in-memory databases of non trivial complexity such as configurations, dependencies, etc. See  [information retrieval example](/docs/jsl/html/ir.html). The chapter is based on a textbook example, but covers salient concepts of information retrieval.
+  * Maintain and query small, in-memory databases of non trivial complexity such as configurations, dependencies, etc. See  [information retrieval example](/docs/html/ir.html). The chapter is based on a textbook example, but covers salient concepts of information retrieval.
 
 - Test automation 
-  * Specification of expected output from a JSON returning api, see  [test automation example ](/docs/jsl/html/test.html)
+  * Specification of expected output from a JSON returning api, see  [test automation example ](/docs/html/test.html)
 
 We expect JSL to find more applications over time as an embedded logic-programming library for JS/JSON.
 

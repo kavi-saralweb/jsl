@@ -1,4 +1,4 @@
-[index](/docs/jsl/html/index.html)
+[index](/docs/html/index.html)
 
 ---
 

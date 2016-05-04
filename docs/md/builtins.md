@@ -1,4 +1,4 @@
-[index](/docs/jsl/html/index.html)
+[index](/docs/html/index.html)
 
 ---
 
@@ -642,25 +642,25 @@ response
 {
     "response": {
         "date": [
-            "Tue May 03 2016 18:54:04 GMT-0700 (PDT)"
+            "Tue May 03 2016 18:57:22 GMT-0700 (PDT)"
         ],
         "tomorrow": [
-            "Wed May 04 2016 18:54:04 GMT-0700 (PDT)"
+            "Wed May 04 2016 18:57:22 GMT-0700 (PDT)"
         ],
         "addFive": [
-            "Sun May 08 2016 18:54:04 GMT-0700 (PDT)"
+            "Sun May 08 2016 18:57:22 GMT-0700 (PDT)"
         ],
         "setTimestamp": [
             {
                 "to": "sales@vinod-denim.com",
                 "subject": "test subject",
                 "msgtext": "test message",
-                "timestamp": "Tue May 03 2016 18:54:04 GMT-0700 (PDT)"
+                "timestamp": "Tue May 03 2016 18:57:22 GMT-0700 (PDT)"
             }
         ],
         "dateParts": [
             {
-                "date": "Tue May 03 2016 18:54:04 GMT-0700 (PDT)",
+                "date": "Tue May 03 2016 18:57:22 GMT-0700 (PDT)",
                 "m": 5,
                 "d": 4,
                 "y": 2016
@@ -671,7 +671,7 @@ response
         "to": "sales@vinod-denim.com",
         "subject": "test subject",
         "msgtext": "test message",
-        "timestamp": "Tue May 03 2016 18:54:04 GMT-0700 (PDT)"
+        "timestamp": "Tue May 03 2016 18:57:22 GMT-0700 (PDT)"
     }
 }
 
@@ -986,7 +986,7 @@ The OoO_deep example is somewhat more interesting. It implements a recursive alg
 
 Please note the use of `{bind : ['$obj', {} ] }` as an idiom. Since the empty object {} is contained in any {object}, this is a convenient way to check whether a given value is a javascript object (and not an array).
 
-Also note the use of 'checkType' callback, which provides a mechanism to implement "terminal types" when recognizing object structures. In this case, we implement just one trivial terminal type - _scalar_. The [syntax](/docs/jsl/html/syntax) validator for JSL, also given in JSL, implements a larger range of terminal types using a similar approach.
+Also note the use of 'checkType' callback, which provides a mechanism to implement "terminal types" when recognizing object structures. In this case, we implement just one trivial terminal type - _scalar_. The [syntax](/docs/html/syntax) validator for JSL, also given in JSL, implements a larger range of terminal types using a similar approach.
 
 
 

@@ -5,7 +5,7 @@
         <title></title>
     </head>
     <body>
-        <p><a href="/docs/jsl/html/index.html">index</a></p>
+        <p><a href="/docs/html/index.html">index</a></p>
 <hr>
 <h1 id="jsl-overview">JSL Overview</h1>
 <p>JSL is a JSON based logic programming library. It is meant to be used as an embedded rules engine in JS applications which use JSON as their data format.</p>
@@ -291,7 +291,7 @@ response
 <p><span id="builtins"></p>
 <h2 id="builtins">Builtins</h2>
 <p></span></p>
-<p>JSL supports a few important builtins as part of the language. Please refer to the <a href="/docs/jsl/html/builtins.html">builtins chapter</a> for a complete description. We introduce builtins here by extending our message template to supply the subject as default msgtext in case msgtext is not supplied. </p>
+<p>JSL supports a few important builtins as part of the language. Please refer to the <a href="/docs/html/builtins.html">builtins chapter</a> for a complete description. We introduce builtins here by extending our message template to supply the subject as default msgtext in case msgtext is not supplied. </p>
 <p>We also simplify the unification of the various variables (to, subject, msgtext) against supplied row by using the <strong>$bind</strong>  builtin.</p>
 <pre><code>
 var JSL = require(&#39;../../..&#39;);
@@ -431,7 +431,7 @@ response
     {
         &quot;to&quot;: &quot;sales@vinod-denim.com&quot;,
         &quot;subject&quot;: &quot;Follow up on our order&quot;,
-        &quot;date&quot;: &quot;Tue May 03 2016 18:54:04 GMT-0700 (PDT)&quot;,
+        &quot;date&quot;: &quot;Tue May 03 2016 18:57:22 GMT-0700 (PDT)&quot;,
         &quot;msgtext&quot;: &quot;Follow up on our order&quot;
     }
 ]
@@ -524,13 +524,13 @@ response
     {
         &quot;to&quot;: &quot;sales@vinod-denim.com&quot;,
         &quot;subject&quot;: &quot;Follow up on our order&quot;,
-        &quot;date&quot;: &quot;Tue May 03 2016 18:54:04 GMT-0700 (PDT)&quot;,
+        &quot;date&quot;: &quot;Tue May 03 2016 18:57:22 GMT-0700 (PDT)&quot;,
         &quot;msgtext&quot;: &quot;Please send us an update on shipping status&quot;
     },
     {
         &quot;to&quot;: &quot;sales@agarwal-textiles.com&quot;,
         &quot;subject&quot;: &quot;Request for quotation&quot;,
-        &quot;date&quot;: &quot;Tue May 03 2016 18:54:04 GMT-0700 (PDT)&quot;,
+        &quot;date&quot;: &quot;Tue May 03 2016 18:57:22 GMT-0700 (PDT)&quot;,
         &quot;msgtext&quot;: &quot;Request for quotation&quot;
     }
 ]
@@ -545,17 +545,17 @@ response
 <ul>
 <li><p>Data binding </p>
 <ul>
-<li>As described in <a href="/docs/jsl/html/overview.html">this overview</a>, data binding involves filling out &quot;holes&quot; in a JS object using data supplied as another set of JS objects (i.e. parsed JSON)</li>
+<li>As described in <a href="/docs/html/overview.html">this overview</a>, data binding involves filling out &quot;holes&quot; in a JS object using data supplied as another set of JS objects (i.e. parsed JSON)</li>
 </ul>
 </li>
 <li><p>Information Retrieval</p>
 <ul>
-<li>Maintain and query small, in-memory databases of non trivial complexity such as configurations, dependencies, etc. See  <a href="/docs/jsl/html/ir.html">information retrieval example</a>. The chapter is based on a textbook example, but covers salient concepts of information retrieval.</li>
+<li>Maintain and query small, in-memory databases of non trivial complexity such as configurations, dependencies, etc. See  <a href="/docs/html/ir.html">information retrieval example</a>. The chapter is based on a textbook example, but covers salient concepts of information retrieval.</li>
 </ul>
 </li>
 <li><p>Test automation </p>
 <ul>
-<li>Specification of expected output from a JSON returning api, see  <a href="/docs/jsl/html/test.html">test automation example </a></li>
+<li>Specification of expected output from a JSON returning api, see  <a href="/docs/html/test.html">test automation example </a></li>
 </ul>
 </li>
 </ul>

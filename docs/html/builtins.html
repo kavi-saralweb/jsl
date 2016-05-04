@@ -5,7 +5,7 @@
         <title></title>
     </head>
     <body>
-        <p><a href="/docs/jsl/html/index.html">index</a></p>
+        <p><a href="/docs/html/index.html">index</a></p>
 <hr>
 <h1 id="jsl-builtins">JSL Builtins</h1>
 <p>JSL provides the following builtins :</p>
@@ -570,25 +570,25 @@ response
 {
     &quot;response&quot;: {
         &quot;date&quot;: [
-            &quot;Tue May 03 2016 18:54:04 GMT-0700 (PDT)&quot;
+            &quot;Tue May 03 2016 18:57:22 GMT-0700 (PDT)&quot;
         ],
         &quot;tomorrow&quot;: [
-            &quot;Wed May 04 2016 18:54:04 GMT-0700 (PDT)&quot;
+            &quot;Wed May 04 2016 18:57:22 GMT-0700 (PDT)&quot;
         ],
         &quot;addFive&quot;: [
-            &quot;Sun May 08 2016 18:54:04 GMT-0700 (PDT)&quot;
+            &quot;Sun May 08 2016 18:57:22 GMT-0700 (PDT)&quot;
         ],
         &quot;setTimestamp&quot;: [
             {
                 &quot;to&quot;: &quot;sales@vinod-denim.com&quot;,
                 &quot;subject&quot;: &quot;test subject&quot;,
                 &quot;msgtext&quot;: &quot;test message&quot;,
-                &quot;timestamp&quot;: &quot;Tue May 03 2016 18:54:04 GMT-0700 (PDT)&quot;
+                &quot;timestamp&quot;: &quot;Tue May 03 2016 18:57:22 GMT-0700 (PDT)&quot;
             }
         ],
         &quot;dateParts&quot;: [
             {
-                &quot;date&quot;: &quot;Tue May 03 2016 18:54:04 GMT-0700 (PDT)&quot;,
+                &quot;date&quot;: &quot;Tue May 03 2016 18:57:22 GMT-0700 (PDT)&quot;,
                 &quot;m&quot;: 5,
                 &quot;d&quot;: 4,
                 &quot;y&quot;: 2016
@@ -599,7 +599,7 @@ response
         &quot;to&quot;: &quot;sales@vinod-denim.com&quot;,
         &quot;subject&quot;: &quot;test subject&quot;,
         &quot;msgtext&quot;: &quot;test message&quot;,
-        &quot;timestamp&quot;: &quot;Tue May 03 2016 18:54:04 GMT-0700 (PDT)&quot;
+        &quot;timestamp&quot;: &quot;Tue May 03 2016 18:57:22 GMT-0700 (PDT)&quot;
     }
 }
 
@@ -883,7 +883,7 @@ response
 Check the input to ensure it is an {object}
 Then make sure that each value of input is either a scalar, or an OoO_deep
 </code></pre><p>Please note the use of <code>{bind : [&#39;$obj&#39;, {} ] }</code> as an idiom. Since the empty object {} is contained in any {object}, this is a convenient way to check whether a given value is a javascript object (and not an array).</p>
-<p>Also note the use of &#39;checkType&#39; callback, which provides a mechanism to implement &quot;terminal types&quot; when recognizing object structures. In this case, we implement just one trivial terminal type - <em>scalar</em>. The <a href="/docs/jsl/html/syntax">syntax</a> validator for JSL, also given in JSL, implements a larger range of terminal types using a similar approach.</p>
+<p>Also note the use of &#39;checkType&#39; callback, which provides a mechanism to implement &quot;terminal types&quot; when recognizing object structures. In this case, we implement just one trivial terminal type - <em>scalar</em>. The <a href="/docs/html/syntax">syntax</a> validator for JSL, also given in JSL, implements a larger range of terminal types using a similar approach.</p>
 
     </body>
 </html>
