@@ -14,7 +14,7 @@
     "url": "https://github.com/kavi-saralweb/jsonlogic.git"
   },
   "keywords": [],
-  "author": "Kavi Singh",
+  "author": "Kavi Singh, Sandeep Agarwal, Pradeep Singh Rajpoot",
   "license": "MIT",
   "devDependencies": {
     "mocha": "2.4.5",
