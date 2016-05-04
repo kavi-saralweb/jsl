@@ -1,4 +1,4 @@
-var validator = require('../../../jslvalidator-naive.js');
+var validator = require('../../../validator.js');
 var input = [
     [
         { wheel :  '$whell' },

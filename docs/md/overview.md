@@ -481,7 +481,7 @@ response
     {
         "to": "sales@vinod-denim.com",
         "subject": "Follow up on our order",
-        "date": "Tue May 03 2016 14:30:22 GMT-0700 (PDT)",
+        "date": "Tue May 03 2016 18:54:04 GMT-0700 (PDT)",
         "msgtext": "Follow up on our order"
     }
 ]
@@ -586,13 +586,13 @@ response
     {
         "to": "sales@vinod-denim.com",
         "subject": "Follow up on our order",
-        "date": "Tue May 03 2016 14:30:22 GMT-0700 (PDT)",
+        "date": "Tue May 03 2016 18:54:04 GMT-0700 (PDT)",
         "msgtext": "Please send us an update on shipping status"
     },
     {
         "to": "sales@agarwal-textiles.com",
         "subject": "Request for quotation",
-        "date": "Tue May 03 2016 14:30:22 GMT-0700 (PDT)",
+        "date": "Tue May 03 2016 18:54:04 GMT-0700 (PDT)",
         "msgtext": "Request for quotation"
     }
 ]

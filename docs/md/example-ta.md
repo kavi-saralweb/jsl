@@ -44,7 +44,7 @@ A simple login test is shown below. It invokes the login transaction with a know
 
 var auth = require('./auth-module.js');
 var chai = require('chai');
-var chaiJSL = require('chai-jsl');
+var chaiJSL = require('chai-jsonlogic');
 var expect = chai.expect;
 chai.use(chaiJSL);
 
@@ -87,7 +87,7 @@ Thus JSL is used to build a high level logical model of the api being tested. Th
 
 var auth = require('./auth-module.js');
 var chai = require('chai');
-var chaiJSL = require('chai-jsl');
+var chaiJSL = require('chai-jsonlogic');
 var expect = chai.expect;
 chai.use(chaiJSL);
 
