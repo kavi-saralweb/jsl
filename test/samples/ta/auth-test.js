@@ -5,8 +5,6 @@ var expect = chai.expect;
 chai.use(chaiJSL);
 
 
-/* the rules which specify module response given some inputs (txn, username, password) */
-
 var expectedResponseRules = [
     [
         { expectedResponse : '$response' },
@@ -64,21 +62,26 @@ var expectedResponseRules = [
 var counters = {};
 var callbacks = {
     zeroCtr : function(username) {
+        console.log('zeroing ctr for ', username);
         counters[username] = 0;
         return true;
     },
     incrementCtr : function(username) {
+        console.log('increment ctr for ', username);
         if (counters[username] != null) {
             counters[username]++;
         }
         else {
             counters[username] = 1;
         }
+        console.log('ctr for ', username , ' : ', counters[username]);
         return true;
     },
     checkBlocked : function(username) {
         /* callback should return null to fail the JSL rule */
-        return counters[username] != null && counters[username] >= 3 ? true : null
+        var result  =   counters[username] != null && counters[username] >= 3 ? true : null
+        console.log('checkBlocked for user ', username , ' returning ', result, counters[username]);
+        return result;
     }
 }
 
@@ -142,8 +145,9 @@ var tests = [
 ];
 
 
-tests.forEach(function(t) {
-    describe(t.name, function() { 
+describe('Auth test suite', function() { 
+    tests.forEach(function(t) {
+        describe(t.name, function() { 
             it(t.description, function(done) { 
                 var response = auth[t.txn]({
                     username : t.username, 
@@ -159,6 +163,8 @@ tests.forEach(function(t) {
                 expect(response).to.have.patternFromRules(rules, callbacks);
                 done();
             });
+        });
     });
 });
+
 
