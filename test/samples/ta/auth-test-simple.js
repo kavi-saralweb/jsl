@@ -1,6 +1,6 @@
 var auth = require('./auth-module.js');
 var chai = require('chai');
-var chaiJSL = require('chai-jsonlogic');
+var chaiJSL = require('chai-jsl');
 var expect = chai.expect;
 chai.use(chaiJSL);
 
