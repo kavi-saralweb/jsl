@@ -1,4 +1,4 @@
-[Full documentation](/docs/html/index.html)
+[Full documentation](http://kavi-saralweb.github.io/docs/html/index.html)
 
 ---
 
@@ -437,18 +437,18 @@ In this example, the query _matches_ the matching rule, and each _body_ part of 
 
 This overview showed a naive bid/offer matching procedure which started by merging two objects, and progressed in complexity to produce matching pairs from multiple types of records.
 
-The [next chapter](/docs/html/features.html) introduces features of JSL (builtins, callbacks) which allow refinement of the matching procedure to make it more capable.
+The [next chapter](http://kavi-saralweb.github.io/docs/html/features.html) introduces features of JSL (builtins, callbacks) which allow refinement of the matching procedure to make it more capable.
 
 We have found JSL useful for the following tasks :
 
 - Data binding 
-  * As described in [this overview](/docs/html/overview.html), data binding involves filling out "holes" in a JS object using data supplied as another set of JS objects. Bids and Offers are merely unbound objects waiting to be bound to a "matching" object. 
+  * As described in [this overview](http://kavi-saralweb.github.io/docs/html/overview.html), data binding involves filling out "holes" in a JS object using data supplied as another set of JS objects. Bids and Offers are merely unbound objects waiting to be bound to a "matching" object. 
 
 - Information Retrieval
-  * Maintain and query small, in-memory databases of non trivial complexity such as configurations, dependencies, etc. See  [information retrieval example](/docs/html/ir.html). The chapter is based on a textbook example, but covers salient concepts of information retrieval.
+  * Maintain and query small, in-memory databases of non trivial complexity such as configurations, dependencies, etc. See  [information retrieval example](http://kavi-saralweb.github.io/docs/html/ir.html). The chapter is based on a textbook example, but covers salient concepts of information retrieval.
 
 - Test automation 
-  * Specification of expected output from a JSON returning api, see  [test automation example ](/docs/html/example-ta.html)
+  * Specification of expected output from a JSON returning api, see  [test automation example ](http://kavi-saralweb.github.io/docs/html/example-ta.html)
 
 We expect JSL to find more applications over time as an embedded logic-programming library for JS/JSON.
 
