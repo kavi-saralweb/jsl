@@ -76,9 +76,9 @@ The example shows some important characteristics of JSL.
 
 <span id="unification">
 
-## Unification
-
 </span>
+
+## Unification
 
 We extend our example by introducing multiple bids, and asking the system to produce a contract for the one which matches a given offer. The bids variable is now an array of arrays, i.e. a valid JSl batch of facts (data). It can be given directly as rules to JSL.
 
@@ -153,9 +153,9 @@ The system produces a completed contract based on the one matching bid in the se
 
 <span id="transform">
 
-## Data transformation
-
 </span>
+
+## Data transformation
 
 We now introduce multiple matching bids, and ask the system to produce just a list of names of matching bidders. 
 
@@ -239,9 +239,9 @@ _Note: If the transform is left unspecified, the result is an array of arrays, i
 
 <span id="rules">
 
-## Logic programming / Rules
-
 </span>
+
+## Logic programming / Rules
 
 We complete our basic example by introducing multiple bids as well as offers, and ask the system to produce a set of possible matches (contracts).
 
@@ -428,9 +428,9 @@ Finally, note that we concatenate rules and facts (data) before calling Jsl, com
 
 <span id="algorithm">
 
-## JSL algorithm
-
 </span>
+
+## JSL algorithm
 
 For any given rule, the _head_ is _satisfied_ if each part of the _body_ is _satisfied_. Thus _facts_ are always _satisfied_. Each part of the _body_ is _unified_ against the set of rules, to find a rule where the _head_ of the rule _matches_ the body part.
 
@@ -442,9 +442,9 @@ In this example, the query _matches_ the matching rule, and each _body_ part of 
 
 <span id="summary">
 
-## Summary
-
 </span>
+
+## Summary
 
 This overview showed a naive bid/offer matching procedure which started by merging two objects, and progressed in complexity to produce matching pairs from multiple types of records.
 
