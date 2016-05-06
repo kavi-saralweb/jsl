@@ -1,6 +1,6 @@
 {
   "name": "lib-jsl",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "JsonLogic is a JSON based logic programming library meant for embedded use",
   "main": "jsl.js",
   "directories": {
@@ -13,7 +13,18 @@
     "type": "git",
     "url": "https://github.com/kavi-saralweb/jsl.git"
   },
-  "keywords": ["logic programming", "rules based programming", "unification", "unifier", "JSON logic programming", "JSON unifier", "JSON rules based programming","JS logic programming", "JS unifier", "JS rules based programming"],
+  "keywords": [
+    "logic programming",
+    "rules based programming",
+    "unification",
+    "unifier",
+    "JSON logic programming",
+    "JSON unifier",
+    "JSON rules based programming",
+    "JS logic programming",
+    "JS unifier",
+    "JS rules based programming"
+  ],
   "author": "Kavi Singh, Sandeep Agarwal, Pradeep Singh Rajpoot",
   "license": "MIT",
   "devDependencies": {
@@ -24,9 +35,8 @@
     "grunt-commands": "*",
     "grunt-md2html": "^0.3.0",
     "grunt-contrib-copy": "*",
-    "grunt-shell": "1.1.1",
-    "grunt-nunjucks-2-html": "^0.2.10",
     "grunt-shell": "*",
+    "grunt-nunjucks-2-html": "^0.2.10",
     "markdown-toc": "^0.12.6",
     "matchdep": "^1.0.0"
   }
