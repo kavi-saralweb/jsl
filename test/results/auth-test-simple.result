@@ -1,0 +1,10 @@
+
+
+  Example: Test Automation
+    Auth test using pattern method
+      login
+        ✓ should successfully login
+
+
+  1 passing (10ms)
+

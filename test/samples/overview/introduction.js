@@ -1,21 +1,27 @@
-var JSL = require('../../..');
+var JSL = require('lib-jsl');
 
-var ruleset = [
-    [{
-        message : {
-            to : 'world',
-            subject : 'hello',
-            msgtext : 'hello world'
-        }
-    
-    }] 
-];
+var offer = {
+    offerer : 'sandeep',
+    bidder : '$bidder',
+    symbol : 'ABC',
+    price : 10,
+    qty : 100
+} 
 
-var query = [{message : '$x'}];
-var transform = '$x';
+var bid = [{
+    offerer : '$offerer',
+    bidder : 'kavi',
+    symbol : 'ABC',
+    price : 10,
+    qty : 100
+}]
 
-var jsl = new JSL({rules: ruleset, query: query, transform: transform});
+var jsl = new JSL({
+    rules: [bid],
+    query: [offer]
+});
 
 var response = jsl.run();
+console.log('contract: ', response);
 
 module.exports = response;

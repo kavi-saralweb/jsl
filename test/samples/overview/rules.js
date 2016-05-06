@@ -9,7 +9,7 @@ var offers = [
     price : 20,
     qty : 100
 }],
-[{
+ [{
     type : 'offer',
     offerer : 'shekhar',
     bidder : '$bidder',
@@ -24,8 +24,15 @@ var offers = [
     symbol : 'ABC',
     price : 20,
     qty : 200
+}],
+[{
+    type : 'offer',
+    offerer : 'prachi',
+    bidder : '$bidder',
+    symbol : 'ABC',
+    price : 25,
+    qty : 200
 }]
-
 ]
 
 
@@ -35,7 +42,7 @@ var bids = [
     offerer : '$offerer',
     bidder : 'kavi',
     symbol : 'ABC',
-    price : 20,
+    price : 10,
     qty : 100
 }],
 [{
@@ -43,27 +50,44 @@ var bids = [
     offerer : '$offerer',
     bidder : 'pradeep',
     symbol : 'ABC',
-    price : 30,
+    price : 20,
     qty : 100
+}],
+[{
+    type : 'bid',
+    offerer : '$offerer',
+    bidder : 'taran',
+    symbol : 'ABC',
+    price : 20,
+    qty : 200
+}],
+[{
+    type : 'bid',
+    offerer : '$offerer',
+    bidder : 'naveen',
+    symbol : 'ABC',
+    price : 20,
+    qty : 100
+}],
+[{
+    type : 'bid',
+    offerer : '$offerer',
+    bidder : 'prashant',
+    symbol : 'ABC',
+    price : 25,
+    qty : 200
 }]
-
 
 ]
 
 var rules = [
-    [   
-        { match : {offerer : '$offerer', bidder : '$bidder', symbol : '$symbol', price : '$price', qty : '$qty', status : '$status'}},
+    [   //head
+        { match : {offerer : '$offerer', bidder : '$bidder', symbol : '$symbol', price : '$price', qty : '$qty'}},
+        //body
         { type: 'bid', bidder : '$bidder', symbol : '$symbol', price : '$price', qty : '$qty'},
-        { $or : [
-            { $and : [ 
-                { type : 'offer', offerer : '$offerer', symbol : '$symbol', price : '$price', qty : '$qty'},
-                { $bind : [ '$status', 'matched' ] }
-            ] },
-            { $bind : [['$status', '$offerer'] , ['**unmatched**', 'N/A'] ] }
-        ] }
-            
+        { type : 'offer', offerer : '$offerer', symbol : '$symbol', price : '$price', qty : '$qty'},
     ]
-]
+];
 
 var jsl = new JSL({
     rules: rules.concat(bids, offers),
@@ -72,6 +96,6 @@ var jsl = new JSL({
 });
 
 var response = jsl.run();
-console.log('matches: ', response);
+console.log('contracts: ', response);
 
 module.exports = response;

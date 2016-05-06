@@ -10,9 +10,20 @@ describe('Overview', function() {
              var expectedResponse = 
                 [
                     {
-                        'to': 'sales@vinod-denim.com',
-                        'subject': 'Follow up on our order',
-                        'msgtext': 'Follow up on our order'
+                        'offerer': 'sandeep',
+                        'bidder': 'kavi',
+                        'symbol': 'ABC',
+                        'price': 20,
+                        'qty': 100,
+                        'status': 'matched'
+                    },
+                    {
+                        'offerer': 'N/A',
+                        'bidder': 'pradeep',
+                        'symbol': 'ABC',
+                        'price': 30,
+                        'qty': 100,
+                        'status': '**unmatched**'
                     }
                 ]
             expect(response).to.have.pattern(expectedResponse);

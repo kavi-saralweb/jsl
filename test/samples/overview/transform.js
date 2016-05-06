@@ -29,16 +29,31 @@ var bids = [
     symbol : 'ABC',
     price : 20,
     qty : 200
+}],
+[{
+    offerer : '$offerer',
+    bidder : 'naveen',
+    symbol : 'ABC',
+    price : 20,
+    qty : 100
+}],
+[{
+    offerer : '$offerer',
+    bidder : 'prashant',
+    symbol : 'ABC',
+    price : 25,
+    qty : 200
 }]
 
 ]
 
 var jsl = new JSL({
     rules: bids,
-    query: [offer]
+    query: [offer],
+    transform: '$bidder'
 });
 
 var response = jsl.run();
-console.log('contract: ', response);
+console.log('matching bidders ', response);
 
 module.exports = response;

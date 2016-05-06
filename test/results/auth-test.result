@@ -1,0 +1,24 @@
+
+
+  Example: Test Automation
+    Auth test using patternFromRules method
+      login
+        ✓ should successfully login
+      login-incorrect-pwd1
+        ✓ incorrect password should fail login (1)
+      login-incorrect-pwd2
+        ✓ incorrect password should fail login (2)
+      login-incorrect-pwd3
+        ✓ incorrect password should fail login (3)
+      login-blocked1
+        ✓ incorrect pwd, but account should be blocked
+      login-blocked2
+        ✓ correct pwd, but account should be blocked
+      logout
+        ✓ logout attempt on blocked account, should succeed
+      login-blocked3
+        ✓ login with correct pwd after logout on blocked account, but should still be blocked
+
+
+  8 passing (24ms)
+

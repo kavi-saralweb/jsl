@@ -5,17 +5,20 @@ chai.use(chaiJSL);
 
 describe('Overview', function() {
     describe('Unification', function() {
-        it('should generate the message record through unification', function(done) {
+        it('should generate a contract against the matching bid/offer pair', function(done) {
 			var response = require('../../samples/overview/unification.js');
             var expectedResponse = 
                 [
-                    {
-                        to: 'sales@vinod-denim.com',
-                        subject: 'Follow up on our order',
-                        msgtext: 'Please send us an update on shipping status'
-                    }
+                    [
+                        {
+                            'offerer': 'sandeep',
+                            'bidder': 'pradeep',
+                            'symbol': 'ABC',
+                            'price': 20,
+                            'qty': 100
+                        }
+                    ]
                 ]
-
             expect(response).to.have.pattern(expectedResponse);
             done();
         });
