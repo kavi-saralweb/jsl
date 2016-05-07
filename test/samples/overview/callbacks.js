@@ -142,7 +142,6 @@ var callbacks = {
         return true; // accumulation always succeeds
     },
 
-    //{ $call : [ 'getBestMatch', '$bidder', ['$offerer', '$price'] ] }
     getBestMatch : function(bidder) {
         var result = null;
         if (bestOffers[bidder] != null) {
@@ -160,7 +159,6 @@ var jsl = new JSL({
 });
 
 var response = jsl.run();
-console.log(bestOffers);
 
 console.log('matches: ', response);
 

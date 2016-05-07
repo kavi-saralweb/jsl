@@ -456,7 +456,7 @@ We have found JSL useful for the following tasks :
   * As described in [this overview](http://kavi-saralweb.github.io/docs/html/overview.html), data binding involves filling out "holes" in a JS object using data supplied as another set of JS objects. Bids and Offers are merely unbound objects waiting to be bound to a "matching" object. 
 
 - Information Retrieval
-  * Maintain and query small, in-memory databases of non trivial complexity such as configurations, dependencies, etc. See  [information retrieval example](http://kavi-saralweb.github.io/docs/html/ir.html). The chapter is based on a textbook example, but covers salient concepts of information retrieval.
+  * Maintain and query small, in-memory databases of non trivial complexity such as configurations, dependencies, etc. See  [information retrieval example](http://kavi-saralweb.github.io/docs/html/example-ir.html). The chapter is based on a textbook example, but covers salient concepts of information retrieval.
 
 - Test automation 
   * Specification of expected output from a JSON returning api, see  [test automation example ](http://kavi-saralweb.github.io/docs/html/example-ta.html)
