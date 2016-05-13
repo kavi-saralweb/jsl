@@ -1,7 +1,7 @@
 {
   "name": "lib-jsl",
   "version": "0.0.13",
-  "description": "JsonLogic is a JSON based logic programming library meant for embedded use",
+  "description": "JSL is a JSON based logic programming library meant for embedded use",
   "main": "jsl.js",
   "directories": {
     "test": "tests"
