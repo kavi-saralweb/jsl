@@ -16,15 +16,9 @@ var rules = [
     ]*/
 
     [
-        { hammers : '$result'},
-        { $or : [
-            { $and : [
-                { tool : { name : 'hammer', color : '$color'} },
-                { bind : ['$result', { name : 'hammer', color : '$color'} ] }
-            ] },
-            { bind : [  { name : 'none', color : 'none' } , '$result'] }
-        ] }
-        
+        { hammers : '$tool'},
+        { tool : '$tool'},
+        { $bind : [ '$tool', { name : 'hammer' } ] }       
         
     ]
     
@@ -41,7 +35,7 @@ var callbacks = {};
 //var transform =  '$tool';
 
 var query = [{ hammers : '$hammers'}];
-var transform  = null;
+var transform  = '$hammers';
 var jsl = new JSL ({
     rules : rules,
     query : query,

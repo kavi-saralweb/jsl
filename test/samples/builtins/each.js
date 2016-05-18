@@ -23,6 +23,7 @@ var ruleset = [
     ],
     [ 
         { OoO_deep : '$input'},
+        { $call : [ 'log', '$input' ] },
         { $bind : [ '$input', {} ] },
         { $each : [ '$input', '$value', '$key', 
             { $or : [
@@ -56,6 +57,7 @@ function checkType (x, type) {
     if (typesTable[type] != null) {
         result = typesTable[type](x)
     }
+    console.log('checkType: ', x, type, result)
     return result;
 }
 
@@ -66,7 +68,7 @@ var callbacks = {
 var response = {};
 var query;
 
-query =     [{AoA : AoA}];
+/*query =     [{AoA : AoA}];
 var jsl = new JSL ({rules : ruleset, query: query, callbacks : callbacks});
 response.AoA = jsl.run();
 
@@ -84,10 +86,10 @@ response.OoO = jsl.run();
 
 query =     [{OoO_deep : OoO_deep}];
 jsl = new JSL({rules : ruleset, query: query, callbacks : callbacks});
-response.OoO_deep = jsl.run();
+response.OoO_deep = jsl.run();*/
 
 query =     [{OoO_deep : OoO_deep_fail}];
 jsl = new JSL({rules : ruleset, query: query, callbacks : callbacks});
 response.OoO_deep_fail = jsl.run();
-
+console.log(JSON.stringify(response,null,2))
 module.exports = response ;
