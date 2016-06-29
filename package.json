@@ -1,6 +1,6 @@
 {
   "name": "lib-jsl",
-  "version": "0.0.15",
+  "version": "0.0.14",
   "description": "JSL is a JSON based logic programming library meant for embedded use",
   "main": "jsl.js",
   "directories": {

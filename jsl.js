@@ -1,6 +1,7 @@
 var utils = require('./lib/utils.js');
 var core = require('./lib/core.js');
 var cblib = require('./lib/cblib.js');
+var setscb = require('./includes/set-operations.js');
 
 function cleanup() {
     Object.keys(this.env).forEach(function(k) {
@@ -28,12 +29,18 @@ var JSL = function(opts) {
     }
     opts = opts != null ? opts : {};
 
+    var includes = {
+        set: setscb
+    }    
+
+
     this.env = {};
     this.rules = opts.rules || [];
     this.subquery = opts.subquery;
     this.query = opts.query || [];
     this.transform = opts.transform || this.query;
-    this.callbacks = utils.objMerge(cblib, opts.callbacks);
+    var internalCallbacks = utils.objMerge(cblib, utils.objectToPaths(includes));
+    this.callbacks = utils.objMerge(internalCallbacks, opts.callbacks);
     this.finalResult = [];
 
     if ( opts.ctrlScope != null ) {
